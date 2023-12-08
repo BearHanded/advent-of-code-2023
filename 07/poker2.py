@@ -5,7 +5,7 @@ INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 SCORE_ORDER = ["HIGH", "ONE_PAIR", "TWO_PAIR", "THREE_KIND", "FULL", "FOUR_KIND", "FIVE_KIND"]
-CARD_ORDER = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+CARD_ORDER = ["J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A"]
 
 
 def play_poker(f):
@@ -27,6 +27,13 @@ def score_hand(cards):
             counts[s] += 1
         else:
             counts[s] = 1
+    # Consider Jokers - JJJJJ exists
+    if len(counts) > 1 and "J" in counts:
+        j_val = counts["J"]
+        del counts["J"]
+        largest_count_key = max(counts, key=counts.get)
+        counts[largest_count_key] += j_val
+
     sums = list(counts.values())
     if 5 in sums:
         return "FIVE_KIND"
@@ -48,7 +55,6 @@ def compare_hands(hand_a, hand_b):
         return -1
     elif SCORE_ORDER.index(hand_a[2]) > SCORE_ORDER.index(hand_b[2]):
         return 1
-
     for card_a, card_b in zip(hand_a[0], hand_b[0]):
         if CARD_ORDER.index(card_a) < CARD_ORDER.index(card_b):
             return -1
@@ -57,6 +63,5 @@ def compare_hands(hand_a, hand_b):
     return 0
 
 
-assert play_poker(TEST_INPUT) == 6440
-print("Part One: ", play_poker(INPUT))
-
+assert play_poker(TEST_INPUT) == 5905
+print("Part Two: ", play_poker(INPUT))
