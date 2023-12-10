@@ -1,5 +1,4 @@
 from util import christmas_input
-import numpy as np
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
