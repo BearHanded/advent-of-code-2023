@@ -42,8 +42,8 @@ pipes = {
     "J": (NORTH, WEST),
     "7": (SOUTH, WEST),
     "F": (SOUTH, EAST),
-    ".": None,              # No Pipe
-    "S": None               # Start, special handling
+    ".": (None, None),              # No Pipe
+    "S": (None, None)               # Start, special handling
 }
 
 
@@ -51,7 +51,7 @@ def find_furthest(f):
     grid = [[i for i in list(line)] for line in christmas_input.file_to_array(f)]
     (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
     distance = 0
-    curr_direction = pick_initial_direction(grid, x, y)
+    curr_direction = pipes[find_start_piece(grid, x, y)][0]
     curr_pipe = ""
     while curr_pipe != "S":
         x1, y1 = directions[curr_direction]
@@ -66,21 +66,25 @@ def find_furthest(f):
     return int(distance/2)
 
 
-def pick_initial_direction(grid, start_x, start_y):
+def find_start_piece(grid, start_x, start_y):
+    connections = []
     for direction, in [NORTH, SOUTH, EAST, WEST]:
         (x, y) = directions[direction]
         pipe = get_pipe(grid, start_x + x, start_y + y)
         if pipe is None or pipe == ".":
             continue
         if direction == NORTH and SOUTH in pipes[pipe]:
-            return direction
+            connections.append(NORTH)
         elif direction == SOUTH and NORTH in pipes[pipe]:
-            return direction
+            connections.append(SOUTH)
         elif direction == EAST and WEST in pipes[pipe]:
-            return direction
+            connections.append(EAST)
         elif direction == WEST and EAST in pipes[pipe]:
-            return direction
-    return
+            connections.append(WEST)
+
+    for key in pipes:
+        if pipes[key] is not None and connections[0] in pipes[key] and connections[1] in pipes[key]:
+            return key
 
 
 def get_pipe(grid, x, y):
@@ -90,44 +94,44 @@ def get_pipe(grid, x, y):
 
 
 def find_enclosed(f):
-    grid = [[i for i in list(line)] for line in christmas_input.file_to_array(f)]
-    (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
-    distance = 0
-    connected = set()
-    curr_direction = pick_initial_direction(grid, x, y)
+    original_grid = [[i for i in list(line)] for line in christmas_input.file_to_array(f)]
+
+    (y, x) = np.argwhere(np.array(original_grid) == "S").tolist()[0]
+    initial_piece = find_start_piece(original_grid, x, y)
+    original_grid[y][x] = initial_piece  # Replace for later math
+
+    y *= 2  # prep for expansion ?????????????
+    x *= 2
+
+    (initial_y, initial_x) = (y, x)
+    curr_direction = pipes[initial_piece][0]
     curr_pipe = ""
-    while curr_pipe != "S":
+    grid = expand(original_grid)
+
+    connected = set()
+    while True:
         x1, y1 = directions[curr_direction]
         x, y = x + x1, y + y1
-        distance += 1
         curr_pipe = get_pipe(grid, x, y)
         connected.add((x, y))
-        if curr_pipe == "S":
+        if x == initial_x and y == initial_y:
             break
         curr_direction = pipes[curr_pipe][0] if pipes[curr_pipe][1] == inverted_directions[curr_direction] \
             else pipes[curr_pipe][1]
 
-    # print(connected)
-    #     # empty = get_outer(grid, connected)
-    #     # print(sorted(empty))
-    #     # print(len(grid) * len(grid[0]), "-", len(empty), "-", len(connected))
-    #     # # connected correct
-    #     # # empty 69, should say 53
-    #     # surrounded = len(grid) * len(grid[0]) - len(empty) - len(connected)
-    #     # print(surrounded)
-    #     #
-    #     # print(sorted(empty))
-    #     # empty = sorted(empty)
-    #     # t = [["I"] * len(grid[0]) for i in range(len(grid))]
-    #     # for x_0, y_0 in empty:
-    #     #     t[y_0][x_0] = "O"
-    #     # for x_0, y_0 in connected:
-    #     #     t[y_0][x_0] = " "
-    #     # for line in t:
-    #     #     print(line)
+    empty = get_outer(grid, connected)
+    reduced_empty = list(filter(lambda pair: pair[0] % 2 == 0 and pair[1] % 2 == 0, empty))
+    reduced_connected = list(filter(lambda pair: pair[0] % 2 == 0 and pair[1] % 2 == 0, connected))
+    surrounded = len(original_grid) * len(original_grid[0]) - len(reduced_empty) - len(reduced_connected)
 
-    new_grid = expand(grid)
-    return 0
+    t = [["I"] * len(original_grid[0]) for i in range(len(original_grid))]
+    for x_0, y_0 in reduced_empty:
+        t[int(y_0/2)][int(x_0/2)] = "O"
+    for x_0, y_0 in reduced_connected:
+        t[int(y_0/2)][int(x_0/2)] = " "
+    for line in t:
+        print(line)
+    return surrounded
 
 
 def get_outer(grid, connected):
@@ -161,18 +165,31 @@ def get_outer(grid, connected):
         empty = next_empty
     return empty
 
+
 def expand(grid):
     new_grid_y = []
-    for y in range(len(grid)-1):
+    for y in range(len(grid)):
         expanded = []
         new_grid_y.append(grid[y])
-        for x in range(len(grid)-1):
+        if y == (len(grid) - 1):
+            break
+        for x in range(len(grid[0])):
             cell = "|" if SOUTH in pipes[grid[y][x]] and NORTH in pipes[grid[y+1][x]] else "."
             expanded.append(cell)
         new_grid_y.append(expanded)
 
-    print(new_grid_y)
-    return new_grid_y
+    new_grid_x = []
+    for y in range(len(new_grid_y)):
+        expanded = []
+        for x in range(len(new_grid_y[0])):
+            expanded.append(new_grid_y[y][x])
+            if x == (len(grid[0]) - 1):
+                break
+            cell = "-" if EAST in pipes[new_grid_y[y][x]] and WEST in pipes[new_grid_y[y][x+1]] else "."
+            expanded.append(cell)
+        new_grid_x.append(expanded)
+
+    return new_grid_x
 
 
 assert find_furthest(TEST_INPUT) == 4
