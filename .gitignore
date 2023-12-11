@@ -1,5 +1,5 @@
 # Ignore input files per request of AoC
-# input.txt
+input.txt
 
 .idea/
 .vscode/
