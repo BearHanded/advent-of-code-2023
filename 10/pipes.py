@@ -16,19 +16,11 @@ NORTH = "N"
 SOUTH = "S"
 EAST = "E"
 WEST = "W"
-NORTHWEST = "NW"
-NORTHEAST = "NE"
-SOUTHWEST = "SW"
-SOUTHEAST = "SE"
 DIRECTIONS = {
     NORTH: (0, -1),
     SOUTH: (0, 1),
     EAST: (1, 0),
     WEST: (-1, 0),
-    NORTHWEST: (-1, -1),
-    NORTHEAST: (1, -1),
-    SOUTHWEST: (-1, 1),
-    SOUTHEAST: (1, 1),
 }
 INVERTED_DIRECTIONS = {
     NORTH: SOUTH,
@@ -53,17 +45,14 @@ def find_furthest(f):
     (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
     distance = 0
     curr_direction = PIPES[find_start_piece(grid, x, y)][0]
-    curr_pipe = ""
-    while curr_pipe != "S":
-        x1, y1 = DIRECTIONS[curr_direction]
-        x, y = x + x1, y + y1
+    while True:
+        x, y = x + DIRECTIONS[curr_direction][0], y + DIRECTIONS[curr_direction][1]
         distance += 1
         curr_pipe = get_pipe(grid, x, y)
         if curr_pipe == "S":
             break
         curr_direction = PIPES[curr_pipe][0] if PIPES[curr_pipe][1] == INVERTED_DIRECTIONS[curr_direction] \
             else PIPES[curr_pipe][1]
-
     return int(distance/2)
 
 
@@ -76,7 +65,6 @@ def find_start_piece(grid, start_x, start_y):
             continue
         if INVERTED_DIRECTIONS[direction] in PIPES[pipe]:
             connections.append(direction)
-
     for key in PIPES:
         if PIPES[key] is not None and connections[0] in PIPES[key] and connections[1] in PIPES[key]:
             return key
@@ -108,14 +96,10 @@ def find_enclosed(f):
         connected.add((x, y))
         if x == initial_x and y == initial_y:
             break
-        curr_direction = PIPES[curr_pipe][0] if PIPES[curr_pipe][1] == INVERTED_DIRECTIONS[curr_direction] \
-            else PIPES[curr_pipe][1]
-
-    empty = get_outer(grid, connected)
-    marked = empty | connected
-    compressed_marked = list(filter(lambda pair: pair[0] % 2 == 0 and pair[1] % 2 == 0, marked))
-    surrounded = len(original_grid) * len(original_grid[0]) - len(compressed_marked)
-    return surrounded
+        curr_direction = PIPES[curr_pipe][0] if PIPES[curr_pipe][1] == INVERTED_DIRECTIONS[curr_direction] else PIPES[curr_pipe][1]
+    connected = get_outer(grid, connected)
+    compressed = list(filter(lambda pair: pair[0] % 2 == 0 and pair[1] % 2 == 0, connected))
+    return len(original_grid) * len(original_grid[0]) - len(compressed)
 
 
 def get_outer(grid, connected):
@@ -134,19 +118,17 @@ def get_outer(grid, connected):
         if (max_x-1, y) not in connected:
             empty.add((max_x-1, y))
 
-    growing = True
-    while growing:
-        next_empty = empty.copy()
+    while len(empty) > 0:
+        next_empty = set()
         for (x, y) in empty:
+            connected.add((x, y))
             for x1, y1 in DIRECTIONS.values():
                 new_x = x + x1
                 new_y = y + y1
                 if 0 < new_x < max_x and 0 < new_y < max_y and (new_x, new_y) not in connected:
                     next_empty.add((new_x, new_y))
-        if len(next_empty) == len(empty):
-            growing = False
         empty = next_empty
-    return empty
+    return connected
 
 
 def expand(grid):
