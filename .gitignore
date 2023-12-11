@@ -1,3 +1,6 @@
+# Ignore input files per request of AoC
+input.txt
+
 .idea/
 .vscode/
 
