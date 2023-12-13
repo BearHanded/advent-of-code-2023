@@ -13,7 +13,8 @@ def find_shortest(f, factor):
     galaxies = np.argwhere(np.array(stars) == "#").tolist()
     galaxy_dist = {}
     for ((y1, x1), (y2, x2)) in list(combinations(galaxies, 2)):
-        expansion = len([row for row in expanded_rows if (x1 < row < x2) or (x2 < row < x1)]) + len([col for col in expanded_cols if (y1 < col < y2) or (y2 < col < y1)])
+        expansion = len([row for row in expanded_rows if (x1 < row < x2) or (x2 < row < x1)]) \
+                    + len([col for col in expanded_cols if (y1 < col < y2) or (y2 < col < y1)])
         galaxy_dist[(x1, y1), (x2, y2)] = abs(x1 - x2) + abs(y1 - y2) + factor * expansion - expansion
     return sum(galaxy_dist.values())
 
