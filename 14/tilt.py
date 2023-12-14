@@ -1,6 +1,7 @@
 from util import christmas_input
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
+TOTAL_CYCLES = 1000000000
 
 
 def check_load(f):
@@ -13,9 +14,8 @@ def check_load(f):
 
 def spin_cycle(f):
     platform = [list(row) for row in christmas_input.file_to_array(f)]
-    total_cycles = 1000000000
     known_configs = {}
-    for curr_cycle in range(1, total_cycles+1):
+    for curr_cycle in range(1, TOTAL_CYCLES+1):
         for _ in range(4):
             platform = rotate(platform)
             platform = slide(platform)
@@ -25,29 +25,15 @@ def spin_cycle(f):
             break
         known_configs[key] = curr_cycle
 
-    # find offset in loop for final calculation:
-    cycle_length = curr_cycle - known_configs[key]
-    cycle_start = known_configs[key]
-    remaining_cycles = (total_cycles-cycle_start) % cycle_length
+    remaining_cycles = (TOTAL_CYCLES - known_configs[key]) % (curr_cycle - known_configs[key])
 
     for curr_cycle in range(remaining_cycles):
         for _ in range(4):
             platform = rotate(platform)
             platform = slide(platform)
 
-    # Calculate
-    platform = rotate(platform)
-    load = sum_weights(platform)
-
-    print(load)
-    return load
-
-
-def rotate(platform, amount=1):
-    out = platform
-    for _ in range(amount):
-        out = [list(i) for i in list(zip(*out[::-1]))]
-    return out
+    platform = rotate(platform)  # Point North right for sums
+    return sum_weights(platform)
 
 
 def slide(platform):
@@ -57,7 +43,6 @@ def slide(platform):
             if row[idx] == "#":
                 barrier = idx
             elif row[idx] == "O":
-                # Slide to barrier or O
                 sub_idx = "".join(row[idx:barrier]).rfind(".")
                 if sub_idx == -1:
                     continue
@@ -66,13 +51,12 @@ def slide(platform):
     return platform
 
 
+def rotate(platform):
+    return [list(i) for i in list(zip(*platform[::-1]))]
+
+
 def sum_weights(platform):
-    load = 0
-    for row in platform:
-        for idx, char in enumerate(row):
-            if char == "O":
-                load += idx+1
-    return load
+    return sum([sum([idx + 1 for idx, char in enumerate(row) if char == "O"]) for row in platform])
 
 
 assert check_load(TEST_INPUT) == 136
