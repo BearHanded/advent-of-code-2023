@@ -10,8 +10,8 @@ ULTRA_MAX = 10
 
 def shortest_path(f, ultra=False):
     grid = [[int(i) for i in row] for row in christmas_input.file_to_array(f)]
-    visited = {} # (coords, direction, dist): heat
-    queue = [(0, (0, 0), (0, 1), 0), (0, (0, 0), (1, 0), 0)] # (heat, coords, direction, dist)
+    visited = {}  # {(coords, direction, dist): heat}
+    queue = [(0, (0, 0), (0, 1), 0), (0, (0, 0), (1, 0), 0)]  # (heat, coords, direction, dist)
 
     while len(queue) > 0:
         (heat, curr_idx, direction, straight_distance) = heapq.heappop(queue)
@@ -26,7 +26,7 @@ def shortest_path(f, ultra=False):
 def get_next(curr_idx, curr_dir, straight_distance, heat, grid, visited, ultra):
     """Returns a list of possible moves as [(heat, (x,y), (dir_x, dir_y), straight_distance)]"""
     avail = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-    avail.remove((curr_dir[0] * -1, curr_dir[1] * -1)) # can't go backwards
+    avail.remove((curr_dir[0] * -1, curr_dir[1] * -1))  # can't go backwards
     next_moves = []
     for move in avail:
         next_idx = (curr_idx[0] + move[0], curr_idx[1] + move[1])
