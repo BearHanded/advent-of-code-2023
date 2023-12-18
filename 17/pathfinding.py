@@ -35,14 +35,13 @@ def get_next(curr_idx, curr_dir, straight_distance, heat, grid, visited, ultra):
                 or (not ultra and (curr_dir == move and straight_distance >= MAX_STRAIGHT))  # standard: too far, turn
                 or (ultra and ((curr_dir == move and straight_distance >= ULTRA_MAX)         # ultra: too far, turn
                     or (curr_dir != move and straight_distance < ULTRA_MIN)))                # ultra: not far enough
-            ):
+        ):
             continue
         next_heat = heat + grid[next_idx[1]][next_idx[0]]
         next_dist = straight_distance + 1 if curr_dir == move else 1
-        next_move = (next_heat, next_idx, move, next_dist)
         if (next_idx, move, next_dist) not in visited:
             visited[(next_idx, move, next_dist)] = next_heat
-            next_moves.append(next_move)
+            next_moves.append((next_heat, next_idx, move, next_dist))
     return next_moves
 
 
