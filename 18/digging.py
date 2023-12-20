@@ -25,8 +25,9 @@ def dig_a_hole(f, translate_hex=False):
         idx = new_idx
     return perimeter // 2 + internal // 2 + 1
 
-def hex_to_command(hex):
-    return (DIRECTION_NUM[int(hex[-1])], int(hex[:-1], 16))
+
+def hex_to_command(hex_str):
+    return DIRECTION_NUM[int(hex_str[-1])], int(hex_str[:-1], 16)
 
 
 assert dig_a_hole(TEST_INPUT) == 62  # 38 outside, 24 inside

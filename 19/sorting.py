@@ -1,10 +1,10 @@
 from util import christmas_input
-import copy
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 MIN_NUM = 1
 MAX_NUM = 4000
+
 
 def process(f):
     lines = christmas_input.file_to_subarray(f)
@@ -36,16 +36,14 @@ def process(f):
 
 
 def total_allowed(f):
-    lines = christmas_input.file_to_subarray(f)
-    rules = build_rules(lines[0])
+    rules = build_rules(christmas_input.file_to_subarray(f)[0])
     start_ranges = {
         "x": (1, 4000),
         "m": (1, 4000),
         "s": (1, 4000),
         "a": (1, 4000)
     }
-    total = get_solution_size("in", rules, start_ranges)
-    return total
+    return get_solution_size("in", rules, start_ranges)
 
 
 def get_solution_size(rule_key, rules, ranges):
@@ -59,33 +57,33 @@ def get_solution_size(rule_key, rules, ranges):
         
     total = 0
     for rule in rules[rule_key]:
-        ranges_copy = copy.deepcopy(ranges)
+        next_ranges = ranges.copy()
         if len(rule) == 1:
-            total += get_solution_size(rule[0], rules, ranges_copy)
+            total += get_solution_size(rule[0], rules, next_ranges)
             break
         key = rule[0][0]
         value = int(rule[0][2:])
-        (start, end) = ranges_copy[key]
+        (start, end) = next_ranges[key]
 
         if rule[0][1] == "<":
             if value < start:  # no satisfying values
                 continue
             elif start < value < end:  # keep start -> value
-                ranges_copy[key] = (start, value-1) 
+                next_ranges[key] = (start, value-1)
                 ranges[key] = (value, end)
             elif end < value:
-                total += get_solution_size(rule[1], rules, ranges_copy)  # consume the whole thing
+                total += get_solution_size(rule[1], rules, next_ranges)  # consume the whole thing
                 break
         else: 
             if end < value:  # no satisfying values
                 continue
             elif start < value < end:  # keep start -> value
-                ranges_copy[key] = (value+1, end)
+                next_ranges[key] = (value+1, end)
                 ranges[key] = (start, value)
             elif value < start:  # consume the whole thing
-                total += get_solution_size(rule[1], rules, ranges_copy) # consume the whole thing
+                total += get_solution_size(rule[1], rules, next_ranges)  # consume the whole thing
                 break
-        total += get_solution_size(rule[1], rules, ranges_copy)
+        total += get_solution_size(rule[1], rules, next_ranges)
     return total
 
 
