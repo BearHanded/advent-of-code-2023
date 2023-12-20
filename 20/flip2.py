@@ -85,9 +85,14 @@ def flip_flop(f, presses, rx_break=False):
     
     high_total = 0
     low_total = 0
+    rx_found = False
     stack = queue.Queue()
+    for k, v in modules.items():
+        print(k, v, v.destinations)
     for i in range(presses):
         stack.put((LOW, BROADCASTER, "button"))
+        if i % 1000 == 0:
+            print("PRESS:", i)
         while not stack.empty():
             pulse_type, module, source = stack.get()
             if pulse_type == HIGH:
@@ -102,6 +107,9 @@ def flip_flop(f, presses, rx_break=False):
             next_pulse, next_destinations = modules[module].process(pulse_type, source)
             for destination in next_destinations: 
                 stack.put((next_pulse, destination, module))
+        if rx_break and rx_found:
+            print("RX LOW PULSE FOUND AT BUTTON PRESS:", i+1)
+            break
 
     return high_total * low_total
 
@@ -109,4 +117,5 @@ def flip_flop(f, presses, rx_break=False):
 assert flip_flop(TEST_INPUT, 1000) == 32000000
 assert flip_flop(TEST_INPUT_2, 1000) == 11687500
 print("Part One: ", flip_flop(INPUT, 1000))
+print("Part Two: ", flip_flop(INPUT, 1000000000000000, rx_break=True))
 
