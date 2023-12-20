@@ -11,8 +11,8 @@ def process(f):
     sums = {
         "x": 0,
         "m": 0,
-        "s": 0,
-        "a": 0
+        "a": 0,
+        "s": 0
     }
     rules = build_rules(lines[0])
 
@@ -40,8 +40,8 @@ def total_allowed(f):
     start_ranges = {
         "x": (1, 4000),
         "m": (1, 4000),
-        "s": (1, 4000),
-        "a": (1, 4000)
+        "a": (1, 4000),
+        "s": (1, 4000)
     }
     return get_solution_size("in", rules, start_ranges)
 
