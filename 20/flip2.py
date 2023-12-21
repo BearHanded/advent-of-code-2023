@@ -1,5 +1,6 @@
 from util import christmas_input
 import queue
+import numpy as np
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
@@ -57,23 +58,24 @@ class Conjunction(Module):
         self.memory[source] = pulse_type
         return (LOW if LOW not in self.memory.values() else HIGH, self.destinations)  # NAND
 
-
 MODULE_MAP = {
     "&": Conjunction,
     "%": FlipFlop,
     "broadcaster": Module
 }
-# LOGIC
-# 
-def flip_flop(f, presses, rx_break=False):
+
+def find_rx(f):
     parsed = [(k, dest.split(", ")) for k, dest in [line.split(" -> ") for line in christmas_input.file_to_array(f)]]
     modules = {}
+    untyped = {}
+    cycles = {}
+
+    # Build Modules
     for module in parsed:
         if module[0] == BROADCASTER:
             modules[BROADCASTER] = MODULE_MAP[BROADCASTER](module[1])
         else:
             modules[module[0][1:]] = MODULE_MAP[module[0][0]](module[1])
-    untyped = {}
     for name, module in modules.items():
         for destination in module.destinations:
             if destination not in modules:
@@ -82,40 +84,24 @@ def flip_flop(f, presses, rx_break=False):
             modules[destination].connect(name)
     modules.update(untyped)
     
-    
-    high_total = 0
-    low_total = 0
-    rx_found = False
+    # Run
     stack = queue.Queue()
-    for k, v in modules.items():
-        print(k, v, v.destinations)
-    for i in range(presses):
+    press = 0
+    while True:
+        press += 1
         stack.put((LOW, BROADCASTER, "button"))
-        if i % 1000 == 0:
-            print("PRESS:", i)
         while not stack.empty():
             pulse_type, module, source = stack.get()
-            if pulse_type == HIGH:
-                high_total += 1
-            elif pulse_type == LOW:
-                low_total += 1
-
-            if rx_break and module == "rx" and pulse_type == LOW:
-                rx_found = True
-                break
-
             next_pulse, next_destinations = modules[module].process(pulse_type, source)
+            
+            if "vd" in next_destinations and next_pulse == HIGH: # All must be high to trigger a low for vd -> rx
+                cycles[module] = press
+                if len(cycles.values()) == 4:
+                    return np.lcm.reduce(list(cycles.values()))
+
             for destination in next_destinations: 
                 stack.put((next_pulse, destination, module))
-        if rx_break and rx_found:
-            print("RX LOW PULSE FOUND AT BUTTON PRESS:", i+1)
-            break
-
-    return high_total * low_total
 
 
-assert flip_flop(TEST_INPUT, 1000) == 32000000
-assert flip_flop(TEST_INPUT_2, 1000) == 11687500
-print("Part One: ", flip_flop(INPUT, 1000))
-print("Part Two: ", flip_flop(INPUT, 1000000000000000, rx_break=True))
+print("Part Two: ", find_rx(INPUT))
 
