@@ -1,4 +1,7 @@
+import copy
 from util import christmas_input
+import time
+
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
@@ -7,9 +10,18 @@ def part_one(f):
     bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in christmas_input.file_to_array(f)]
     bricks.sort(key=lambda tup: tup[0][2])
     bricks, supports = simulate(bricks)
-    marked = find_disintegrations(supports)
+    marked = [i for i in find_disintegrations(supports)]
     return len(marked)
 
+def part_two(f):
+    # Parse Bricks
+    bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in christmas_input.file_to_array(f)]
+    bricks.sort(key=lambda tup: tup[0][2])
+    bricks, supports = simulate(bricks)
+    marked = [i for i in find_disintegrations(supports)]
+    cascade_sum = plan_cascade(bricks, supports, marked)
+            
+    return cascade_sum
 
 def simulate(bricks):
     supports = {}
@@ -49,5 +61,35 @@ def find_disintegrations(supports):
     return marked
 
 
+def plan_cascade(bricks, supports, marked):
+    destroyable = copy.deepcopy(bricks)
+    for item in marked:
+        destroyable.remove(item)
+    total = 0
+    print(bricks)
+    for b in destroyable:
+        destroyed = set([b])
+        idx = bricks.index(b)
+
+        for b2 in bricks[idx+1:]:
+            if set(supports[b2]).issubset(destroyed):
+                destroyed.add(b2)
+        print(destroyed)
+        total += len(destroyed) - 1  # TODO: Note the - 1, we are tracking the destroyed
+
+    print(total)
+    return total
+
+start = time.time()
+
 assert part_one(TEST_INPUT) == 5
 print("Part One: ", part_one(INPUT))
+assert part_two(TEST_INPUT) == 7
+print("Part Two: ", part_two(INPUT))
+
+end = time.time()
+print(end - start)
+
+# NOT
+# 87123
+# 86496
