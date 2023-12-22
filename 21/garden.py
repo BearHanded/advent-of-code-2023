@@ -1,5 +1,4 @@
 import heapq
-from operator import add
 from util import christmas_input
 import numpy as np
 INPUT = 'input.txt'
