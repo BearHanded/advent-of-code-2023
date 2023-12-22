@@ -7,7 +7,7 @@ TEST_INPUT = 'test_input.txt'
 DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 
-def avail_plots(lines, max_steps, start=None):
+def avail_plots(lines, max_steps, start=None, allow_overflow=True):
     grid = [[c for c in row] for row in lines]
     if start is None:
         (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
@@ -19,7 +19,7 @@ def avail_plots(lines, max_steps, start=None):
     while len(queue) > 0:
         (steps, curr_idx) = heapq.heappop(queue)
 
-        next_moves = get_next(curr_idx, steps, grid, visited, max_steps)
+        next_moves = get_next(curr_idx, steps, grid, visited, max_steps, allow_overflow)
         for move in next_moves:
             heapq.heappush(queue, move)
     even = len([v for v in visited.values() if v % 2 == 0])
@@ -29,20 +29,26 @@ def avail_plots(lines, max_steps, start=None):
 
 def avail_plots_scaled(lines, max_steps):
     grid = [[c for c in row] for row in lines]
-    (mid, _) = np.argwhere(np.array(grid) == "S").tolist()[0]
-    boards = max_steps // len(grid)
+    boards = max_steps // len(grid)  # Number of cells from the origin on the axis
+    remainder = max_steps % len(grid)
 
-    _, state_1 = avail_plots(lines, mid)  # first edge
-    state_2, _ = avail_plots(lines, len(grid) + mid)  # next edge
-    _, state_3 = avail_plots(lines, 2 * len(grid) + mid)  # next edge
+    # Board types:
+    full_even, full_odd = avail_plots(lines, max_steps, allow_overflow=False)  # Flood the board
+    inner_partial_even, inner_partial_odd = avail_plots(lines, remainder, allow_overflow=False)  # center up to 65
+    outer_corners_even = full_even - inner_partial_even
+    outer_corners_odd = full_odd - inner_partial_odd
 
-    b0 = state_1
-    b1 = state_2 - state_1
-    b2 = state_3 - state_2
-    return (boards * (boards - 1) // 2) * (b2 - b1) + b1 * boards + b0
+    total = (
+        ((boards+1)**2) * full_odd
+        + (boards**2) * full_even
+        - (boards + 1) * outer_corners_odd
+        + boards * outer_corners_even
+    )
+    print(full_even, full_odd)
+    return total
 
 
-def get_next(curr_idx, steps, grid, visited, max_steps):
+def get_next(curr_idx, steps, grid, visited, max_steps, allow_overflow):
     if steps >= max_steps:
         return []
     next_moves = []
@@ -50,7 +56,8 @@ def get_next(curr_idx, steps, grid, visited, max_steps):
     for move in DIRECTIONS:
         next_idx = (curr_idx[0] + move[0], curr_idx[1] + move[1])
         if (
-                grid[next_idx[1] % len(grid)][next_idx[0] % len(grid)] == "#"
+                (not allow_overflow and not (0 <= next_idx[0] < len(grid[0]) and 0 <= next_idx[1] < len(grid)))
+                or grid[next_idx[1] % len(grid)][next_idx[0] % len(grid)] == "#"
                 or next_idx in visited
         ):
             continue
