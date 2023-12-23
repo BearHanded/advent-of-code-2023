@@ -17,8 +17,9 @@ SLOPES = {
 
 def part_one(f):
     lines = file_to_array(f)
-    paths = walk((1,0), lines, set())
+    paths = walk((1, 0), lines, set())
     return max(paths) - 1
+
 
 def walk(curr_idx, grid, path):
     # TODO: track current path, don't backtrack
