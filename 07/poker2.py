@@ -1,5 +1,5 @@
 from functools import cmp_to_key
-from util import christmas_input
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
@@ -10,7 +10,7 @@ CARD_ORDER = ["J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A"]
 
 def play_poker(f):
     score = 0
-    lines = [line.split(" ") for line in christmas_input.file_to_array(f)]
+    lines = [line.split(" ") for line in file_to_array(f)]
     hands = [[parts[0], int(parts[1]), score_hand(parts[0])] for parts in lines]
     hands.sort(key=cmp_to_key(compare_hands))
     print(hands)
@@ -63,5 +63,5 @@ def compare_hands(hand_a, hand_b):
     return 0
 
 
-assert play_poker(TEST_INPUT) == 5905
+assert_equals(play_poker(TEST_INPUT), 5905)
 print("Part Two: ", play_poker(INPUT))

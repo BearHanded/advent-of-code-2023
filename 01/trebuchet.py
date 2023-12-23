@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
@@ -17,7 +17,7 @@ DIGIT_MAP = {
 
 
 def calibrate(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     value = 0
     for line in lines:
         nums = [int(i) for i in list(line) if i.isdigit()]
@@ -27,7 +27,7 @@ def calibrate(filename):
 
 def digitize_calibrate(filename):
     # xtwone3four makes things weird
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     value = 0
     for line in lines:
         lowest_idx = 1000
@@ -60,10 +60,10 @@ def digitize_calibrate(filename):
     return value
 
 
-assert calibrate(TEST_INPUT) == 142
+assert_equals(calibrate(TEST_INPUT), 142)
 print("Part One: ", calibrate(INPUT))
-assert calibrate(TEST_INPUT) == 142
+assert_equals(calibrate(TEST_INPUT), 142)
 print("Part One: ", calibrate(INPUT))
 print(digitize_calibrate(TEST_INPUT_WORDS))
-assert digitize_calibrate(TEST_INPUT_WORDS) == 281
+assert_equals(digitize_calibrate(TEST_INPUT_WORDS), 281)
 print("Part Two: ", digitize_calibrate(INPUT))

@@ -1,11 +1,11 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 TOTAL_CYCLES = 1000000000
 
 
 def check_load(f):
-    platform = [list(row) for row in christmas_input.file_to_array(f)]
+    platform = [list(row) for row in file_to_array(f)]
     platform = rotate(platform)  # Rotate right for easy string ops
     platform = slide(platform)
     load = sum_weights(platform)
@@ -13,7 +13,7 @@ def check_load(f):
 
 
 def spin_cycle(f):
-    platform = [list(row) for row in christmas_input.file_to_array(f)]
+    platform = [list(row) for row in file_to_array(f)]
     known_configs = {}
     for curr_cycle in range(1, TOTAL_CYCLES+1):
         for _ in range(4):
@@ -59,8 +59,8 @@ def sum_weights(platform):
     return sum([sum([idx + 1 for idx, char in enumerate(row) if char == "O"]) for row in platform])
 
 
-assert check_load(TEST_INPUT) == 136
+assert_equals(check_load(TEST_INPUT), 136)
 print("Part One: ", check_load(INPUT))
 
-assert spin_cycle(TEST_INPUT) == 64
+assert_equals(spin_cycle(TEST_INPUT), 64)
 print("Part Two: ", spin_cycle(INPUT))

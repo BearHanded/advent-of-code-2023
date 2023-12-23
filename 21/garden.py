@@ -1,5 +1,5 @@
 import heapq
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 
 INPUT = 'input.txt'
@@ -8,7 +8,7 @@ DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 
 def avail_plots(f, max_steps):
-    grid = [[c for c in row] for row in christmas_input.file_to_array(f)]
+    grid = [[c for c in row] for row in file_to_array(f)]
     (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
     visited = {}
     queue = [(0, (x, y))]
@@ -40,5 +40,5 @@ def get_next(curr_idx, steps, grid, visited, max_steps):
     return next_moves
 
 
-assert avail_plots(TEST_INPUT, 6) == 16
+assert_equals(avail_plots(TEST_INPUT, 6), 16)
 print("Part One: ", avail_plots(INPUT, 64))

@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import queue
 
 INPUT = 'input.txt'
@@ -66,7 +66,7 @@ MODULE_MAP = {
 # LOGIC
 # 
 def flip_flop(f, presses, rx_break=False):
-    parsed = [(k, dest.split(", ")) for k, dest in [line.split(" -> ") for line in christmas_input.file_to_array(f)]]
+    parsed = [(k, dest.split(", ")) for k, dest in [line.split(" -> ") for line in file_to_array(f)]]
     modules = {}
     for module in parsed:
         if module[0] == BROADCASTER:
@@ -106,7 +106,7 @@ def flip_flop(f, presses, rx_break=False):
     return high_total * low_total
 
 
-assert flip_flop(TEST_INPUT, 1000) == 32000000
-assert flip_flop(TEST_INPUT_2, 1000) == 11687500
+assert_equals(flip_flop(TEST_INPUT, 1000), 32000000)
+assert_equals(flip_flop(TEST_INPUT_2, 1000), 11687500)
 print("Part One: ", flip_flop(INPUT, 1000))
 

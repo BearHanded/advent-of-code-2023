@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 import re
 
@@ -19,7 +19,7 @@ def score_game(game_string):
 
 
 def sum_games(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     return sum([score_game(line) for line in lines])
 
 
@@ -32,7 +32,7 @@ def score_game_additive(game_string):
     return len(matches)
 
 def grow_games(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     total_cards = 0
     game_lookup = [{"score": score_game_additive(line), "count": 1} for line in lines]
     for idx, game in enumerate(game_lookup):
@@ -48,9 +48,9 @@ def grow_games(filename):
     return total_cards
 
 
-assert sum_games(TEST_INPUT) == 13
+assert_equals(sum_games(TEST_INPUT), 13)
 print("Part One: ", sum_games(INPUT))
 
-assert grow_games(TEST_INPUT) == 30
+assert_equals(grow_games(TEST_INPUT), 30)
 print("Part Two: ", grow_games(INPUT))
 

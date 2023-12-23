@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 
 INPUT = 'input.txt'
@@ -43,7 +43,7 @@ def ghost_walk(f):
 
 
 def build_nodes(f):
-    lines = christmas_input.file_to_array(f)
+    lines = file_to_array(f)
     pattern = lines[0]
     nodes = {}
     for line in lines[2:]:
@@ -51,9 +51,9 @@ def build_nodes(f):
     return pattern, nodes
 
 
-assert desert_walk(TEST_INPUT) == 2
-assert desert_walk(TEST_INPUT2) == 6
+assert_equals(desert_walk(TEST_INPUT), 2)
+assert_equals(desert_walk(TEST_INPUT2), 6)
 print("Part One: ", desert_walk(INPUT))
 
-assert ghost_walk(TEST_INPUT3) == 6
+assert_equals(ghost_walk(TEST_INPUT3), 6)
 print("Part Two: ", ghost_walk(INPUT))

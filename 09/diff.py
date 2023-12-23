@@ -1,11 +1,11 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def find_next(f):
-    sets = [[int(i) for i in line.split(" ")] for line in christmas_input.file_to_array(f)]
+    sets = [[int(i) for i in line.split(" ")] for line in file_to_array(f)]
     extrapolated_sum = 0
     for idx, series in enumerate(sets):
         magnitudes = [series]
@@ -24,7 +24,7 @@ def find_next(f):
 
 
 def find_previous(f):
-    sets = [[int(i) for i in line.split(" ")] for line in christmas_input.file_to_array(f)]
+    sets = [[int(i) for i in line.split(" ")] for line in file_to_array(f)]
     extrapolated_sum = 0
     for idx, series in enumerate(sets):
         magnitudes = [series]
@@ -43,8 +43,8 @@ def find_previous(f):
     return extrapolated_sum
 
 
-assert find_next(TEST_INPUT) == 114
+assert_equals(find_next(TEST_INPUT), 114)
 print("Part One: ", find_next(INPUT))
 
-assert find_previous(TEST_INPUT) == 2
+assert_equals(find_previous(TEST_INPUT), 2)
 print("Part Two: ", find_previous(INPUT))

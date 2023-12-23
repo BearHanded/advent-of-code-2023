@@ -1,11 +1,11 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def find_nearest_points(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     seeds = [int(i) for i in lines[0].split(" ")[1:]]
     layer_idx = 0
     maps = [[]]
@@ -24,7 +24,7 @@ def find_nearest_points(filename):
 
 
 def find_nearest_range(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     a = iter([int(i) for i in lines[0].split(" ")[1:]])
     seeds = [(i, i+k-1) for i, k in zip(a, a)]
     layer_idx = 0
@@ -93,9 +93,9 @@ def shift_layer(value, entry):
     return value - entry[1] + entry[0]
 
 
-assert find_nearest_points(TEST_INPUT) == 35
+assert_equals(find_nearest_points(TEST_INPUT), 35)
 print("Part One: ", find_nearest_points(INPUT))
 
-assert find_nearest_range(TEST_INPUT) == 46
+assert_equals(find_nearest_range(TEST_INPUT), 46)
 print("Part Two: ", find_nearest_range(INPUT))
 

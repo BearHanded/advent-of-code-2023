@@ -1,12 +1,12 @@
 from functools import lru_cache
-from util import christmas_input
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def total_arrangements(f, expand=False):
-    sets = [line.split() for line in christmas_input.file_to_array(f)]
+    sets = [line.split() for line in file_to_array(f)]
     total = 0
     for puzzle, cells in sets:
         if expand:
@@ -42,7 +42,7 @@ def possible_solutions(puzzle, cells):
     return solutions
 
 
-assert total_arrangements(TEST_INPUT) == 21
-assert total_arrangements(TEST_INPUT, True) == 525152
+assert_equals(total_arrangements(TEST_INPUT), 21)
+assert_equals(total_arrangements(TEST_INPUT, True), 525152)
 print("Part One: ", total_arrangements(INPUT))
 print("Part Two: ", total_arrangements(INPUT, True))

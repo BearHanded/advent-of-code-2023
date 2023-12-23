@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import queue
 import numpy as np
 
@@ -65,7 +65,7 @@ MODULE_MAP = {
 }
 
 def find_rx(f):
-    parsed = [(k, dest.split(", ")) for k, dest in [line.split(" -> ") for line in christmas_input.file_to_array(f)]]
+    parsed = [(k, dest.split(", ")) for k, dest in [line.split(" -> ") for line in file_to_array(f)]]
     modules = {}
     untyped = {}
     cycles = {}

@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 
 # Test Files
@@ -41,7 +41,7 @@ PIPES = {
 
 
 def find_furthest(f):
-    grid = [[i for i in list(line)] for line in christmas_input.file_to_array(f)]
+    grid = [[i for i in list(line)] for line in file_to_array(f)]
     (y, x) = np.argwhere(np.array(grid) == "S").tolist()[0]
     distance = 0
     curr_direction = PIPES[find_start_piece(grid, x, y)][0]
@@ -77,7 +77,7 @@ def get_pipe(grid, x, y):
 
 
 def find_enclosed(f):
-    original_grid = [[i for i in list(line)] for line in christmas_input.file_to_array(f)]
+    original_grid = [[i for i in list(line)] for line in file_to_array(f)]
     (y, x) = np.argwhere(np.array(original_grid) == "S").tolist()[0]
     initial_piece = find_start_piece(original_grid, x, y)
     original_grid[y][x] = initial_piece  # Replace for later math
@@ -157,12 +157,12 @@ def expand(grid):
     return new_grid_x
 
 
-assert find_furthest(TEST_INPUT) == 4
-assert find_furthest(TEST_INPUT_2) == 4
-assert find_furthest(TEST_INPUT_3) == 8
+assert_equals(find_furthest(TEST_INPUT), 4)
+assert_equals(find_furthest(TEST_INPUT_2), 4)
+assert_equals(find_furthest(TEST_INPUT_3), 8)
 print("Part One: ", find_furthest(INPUT))
 
-assert find_enclosed(TEST_INPUT_4) == 4
-assert find_enclosed(TEST_INPUT_5) == 8
-assert find_enclosed(TEST_INPUT_6) == 10
+assert_equals(find_enclosed(TEST_INPUT_4), 4)
+assert_equals(find_enclosed(TEST_INPUT_5), 8)
+assert_equals(find_enclosed(TEST_INPUT_6), 10)
 print("Part Two: ", find_enclosed(INPUT))

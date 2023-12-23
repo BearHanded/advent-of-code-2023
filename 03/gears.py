@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import re
 import numpy as np
 INPUT = 'input.txt'
@@ -6,7 +6,7 @@ TEST_INPUT = 'test_input.txt'
 
 
 def number_sum(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     symbols = build_symbols(lines)
     numbers = build_numbers(lines)
 
@@ -48,7 +48,7 @@ def build_numbers(lines):
 
 
 def gear_ratio(filename):
-    lines = christmas_input.file_to_array(filename)
+    lines = file_to_array(filename)
     symbols = build_symbols(lines)
     numbers = build_numbers(lines)
 
@@ -76,9 +76,9 @@ def gear_ratio(filename):
     return sum
 
 
-assert number_sum(TEST_INPUT) == 4361
+assert_equals(number_sum(TEST_INPUT), 4361)
 # print("Part One: ", number_sum(INPUT))
 
 
-assert gear_ratio(TEST_INPUT) == 467835
+assert_equals(gear_ratio(TEST_INPUT), 467835)
 print("Part Two: ", gear_ratio(INPUT))

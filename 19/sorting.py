@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array, file_to_subarray
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
@@ -7,7 +7,7 @@ MAX_NUM = 4000
 
 
 def process(f):
-    lines = christmas_input.file_to_subarray(f)
+    lines = file_to_subarray(f)
     sums = {
         "x": 0,
         "m": 0,
@@ -36,7 +36,7 @@ def process(f):
 
 
 def total_allowed(f):
-    rules = build_rules(christmas_input.file_to_subarray(f)[0])
+    rules = build_rules(file_to_subarray(f)[0])
     start_ranges = {
         "x": (1, 4000),
         "m": (1, 4000),
@@ -95,7 +95,7 @@ def build_rules(rule_strings):
     return rules
 
 
-assert process(TEST_INPUT) == 19114
+assert_equals(process(TEST_INPUT), 19114)
 print("Part One: ", process(INPUT))
-assert total_allowed(TEST_INPUT) == 167409079868000
+assert_equals(total_allowed(TEST_INPUT), 167409079868000)
 print("Part Two: ", total_allowed(INPUT))

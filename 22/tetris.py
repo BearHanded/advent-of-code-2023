@@ -1,14 +1,13 @@
 import copy
-from util import christmas_input
 import time
+from util import assert_equals, file_to_array
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def part_one(f):
-    bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in
-              christmas_input.file_to_array(f)]
+    bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in file_to_array(f)]
     bricks.sort(key=lambda tup: tup[0][2])
     bricks, supports = simulate(bricks)
     marked = [i for i in find_disintegrations(supports)]
@@ -16,8 +15,7 @@ def part_one(f):
 
 
 def part_two(f):
-    bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in
-              christmas_input.file_to_array(f)]
+    bricks = [tuple(tuple([int(c) for c in i.split(",")]) for i in row.split("~")) for row in file_to_array(f)]
     bricks.sort(key=lambda tup: tup[0][2])
     bricks, supports = simulate(bricks)
     marked = [i for i in find_disintegrations(supports)]
@@ -78,13 +76,13 @@ def plan_cascade(bricks, supports, marked):
     return total
 
 
-assert part_one(TEST_INPUT) == 5
+assert_equals(part_one(TEST_INPUT), 5)
 start = time.time()
 print("Part One: ", part_one(INPUT))
 end = time.time()
 print(end - start)
 
-assert part_two(TEST_INPUT) == 7
+assert_equals(part_two(TEST_INPUT), 7)
 start = time.time()
 print("Part Two: ", part_two(INPUT))
 end = time.time()

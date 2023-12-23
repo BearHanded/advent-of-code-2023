@@ -1,11 +1,11 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def mirror_sum(f, clean_mirrors=False):
-    patterns = np.array(christmas_input.file_to_array(f))
+    patterns = np.array(file_to_array(f))
     groups = [[]]
     total_left = 0
     total_above = 0
@@ -34,7 +34,7 @@ def calc_mirrors(group, clean_mirrors):
     return 0
 
 
-assert mirror_sum(TEST_INPUT) == 405
+assert_equals(mirror_sum(TEST_INPUT), 405)
 print("Part One: ", mirror_sum(INPUT))
-assert mirror_sum(TEST_INPUT, True) == 400
+assert_equals(mirror_sum(TEST_INPUT, True), 400)
 print("Part Two: ", mirror_sum(INPUT, True))

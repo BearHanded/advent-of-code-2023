@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 TEST_INPUT_2 = 'test_input2.txt'
@@ -13,7 +13,7 @@ DIRECTION_NUM = ["R", "D", "L", "U"]
 
 
 def dig_a_hole(f, translate_hex=False):
-    commands = [(i, int(j), hex_to_command(k[2:-1])) for (i, j, k) in [row.split() for row in christmas_input.file_to_array(f)]]
+    commands = [(i, int(j), hex_to_command(k[2:-1])) for (i, j, k) in [row.split() for row in file_to_array(f)]]
     idx = (0, 0)
     internal, perimeter = 0, 0
     for line in commands:
@@ -30,8 +30,8 @@ def hex_to_command(hex_str):
     return DIRECTION_NUM[int(hex_str[-1])], int(hex_str[:-1], 16)
 
 
-assert dig_a_hole(TEST_INPUT) == 62  # 38 outside, 24 inside
+assert_equals(dig_a_hole(TEST_INPUT), 62)  # 38 outside, 24 inside
 print("Part One: ", dig_a_hole(INPUT))
-assert hex_to_command("70c710") == ("R", 461937)
-assert dig_a_hole(TEST_INPUT, translate_hex=True) == 952408144115
+assert_equals(hex_to_command("70c710"), ("R", 461937))
+assert_equals(dig_a_hole(TEST_INPUT, translate_hex=True), 952408144115)
 print("Part Two: ", dig_a_hole(INPUT, translate_hex=True))

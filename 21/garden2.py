@@ -1,5 +1,5 @@
 import heapq
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 
 INPUT = 'input.txt'
@@ -66,4 +66,4 @@ def get_next(curr_idx, steps, grid, visited, max_steps, allow_overflow):
     return next_moves
 
 
-print("Part Two: ", avail_plots_scaled(christmas_input.file_to_array(INPUT), 26501365))
+print("Part Two: ", avail_plots_scaled(file_to_array(INPUT), 26501365))

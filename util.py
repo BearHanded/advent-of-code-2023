@@ -35,6 +35,9 @@ def file_to_subarray_ints(filename):
     return [list(int(i) for i in sub) for ele, sub in groupby(initial_array, key=bool) if ele]
 
 
+def assert_equals(actual, expected):
+    assert actual == expected, f"Expected {actual} == {expected}"
+
 
 class BColors:
     HEADER = '\033[95m'

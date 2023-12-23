@@ -1,10 +1,10 @@
-from util import christmas_input
+from util import assert_equals, file_to_array, file_as_string
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
 def get_hash_sum(f):
-    strings = christmas_input.file_as_string(f).split(",")
+    strings = file_as_string(f).split(",")
     return sum([get_hash(string) for string in strings])
 
 
@@ -16,7 +16,7 @@ def get_hash(string):
 
 
 def build_hash_map(f):
-    commands = christmas_input.file_as_string(f).split(",")
+    commands = file_as_string(f).split(",")
     boxes = {}
     for cmd in commands:
         if "-" in cmd:
@@ -45,8 +45,8 @@ def build_hash_map(f):
     return total
 
 
-assert get_hash_sum(TEST_INPUT) == 1320
+assert_equals(get_hash_sum(TEST_INPUT), 1320)
 print("Part One: ", get_hash_sum(INPUT))
 
-assert build_hash_map(TEST_INPUT) == 145
+assert_equals(build_hash_map(TEST_INPUT), 145)
 print("Part Two: ", build_hash_map(INPUT))

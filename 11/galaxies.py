@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 import numpy as np
 from itertools import combinations
 INPUT = 'input.txt'
@@ -6,7 +6,7 @@ TEST_INPUT = 'test_input.txt'
 
 
 def find_shortest(f, factor):
-    stars = [list(line) for line in christmas_input.file_to_array(f)]
+    stars = [list(line) for line in file_to_array(f)]
     rotated = [list(row) for row in zip(*stars[::-1])]
     expanded_cols = [idx for idx, row in enumerate(stars) if "#" not in row]
     expanded_rows = [idx for idx, row in enumerate(rotated) if "#" not in row]
@@ -19,8 +19,8 @@ def find_shortest(f, factor):
     return sum(galaxy_dist.values())
 
 
-assert find_shortest(TEST_INPUT, 2) == 374
-assert find_shortest(TEST_INPUT, 10) == 1030
-assert find_shortest(TEST_INPUT, 100) == 8410
+assert_equals(find_shortest(TEST_INPUT, 2), 374)
+assert_equals(find_shortest(TEST_INPUT, 10), 1030)
+assert_equals(find_shortest(TEST_INPUT, 100), 8410)
 print("Part One: ", find_shortest(INPUT, 2))
 print("Part Two: ", find_shortest(INPUT, 1000000))

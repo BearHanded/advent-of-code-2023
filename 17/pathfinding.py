@@ -1,5 +1,5 @@
 import heapq
-from util import christmas_input
+from util import assert_equals, file_to_array
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 TEST_INPUT_2 = 'test_input2.txt'
@@ -9,7 +9,7 @@ ULTRA_MAX = 10
 
 
 def shortest_path(f, ultra=False):
-    grid = [[int(i) for i in row] for row in christmas_input.file_to_array(f)]
+    grid = [[int(i) for i in row] for row in file_to_array(f)]
     visited = {}  # {(coords, direction, dist): heat}
     queue = [(0, (0, 0), (0, 1), 0), (0, (0, 0), (1, 0), 0)]  # (heat, coords, direction, dist)
 
@@ -45,9 +45,9 @@ def get_next(curr_idx, curr_dir, straight_distance, heat, grid, visited, ultra):
     return next_moves
 
 
-assert shortest_path(TEST_INPUT) == 102
+assert_equals(shortest_path(TEST_INPUT), 102)
 print("Part One: ", shortest_path(INPUT))
 
-assert shortest_path(TEST_INPUT, True) == 94
-assert shortest_path(TEST_INPUT_2, True) == 71
+assert_equals(shortest_path(TEST_INPUT, True), 94)
+assert_equals(shortest_path(TEST_INPUT_2, True), 71)
 print("Part Two: ", shortest_path(INPUT, True))

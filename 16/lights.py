@@ -1,4 +1,4 @@
-from util import christmas_input
+from util import assert_equals, file_to_array
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
@@ -11,7 +11,7 @@ def calc_tiles(grid, start=(0, 0), direction=(1, 0)):
 
 
 def max_tiles(f):
-    grid = christmas_input.file_to_array(f)
+    grid = file_to_array(f)
     sums = []
     for y in range(len(grid)):
         sums.append(calc_tiles(grid, (0, y), (1, 0)))
@@ -53,8 +53,8 @@ def ray_trace(start, direction, grid, rays, tiles):
             return
 
 
-assert calc_tiles(christmas_input.file_to_array(TEST_INPUT)) == 46
-print("Part One: ", calc_tiles(christmas_input.file_to_array(INPUT)))
-assert max_tiles(TEST_INPUT) == 51
+assert_equals(calc_tiles(file_to_array(TEST_INPUT)), 46)
+print("Part One: ", calc_tiles(file_to_array(INPUT)))
+assert_equals(max_tiles(TEST_INPUT), 51)
 print("Part Two: ", max_tiles(INPUT))
 
