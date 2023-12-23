@@ -15,7 +15,7 @@ SLOPES = {
 START = (1, 0)
 
 
-def walk(curr_idx, grid, slippery=True):
+def walk(grid, slippery=True):
     visited = {}
     queue = PriorityQueue()
     queue.put((0, START, {START}))
@@ -28,12 +28,10 @@ def walk(curr_idx, grid, slippery=True):
             queue.put(move)
     print(visited[end])
     return visited[end]
-        
 
 
 def get_next(curr_idx, steps, grid, visited, path, slippery):
     if curr_idx == (len(grid[0]) - 2, len(grid) - 1):
-        # print("END")
         return []
     next_moves = []
     curr_tile = grid[curr_idx[1]][curr_idx[0]]
@@ -69,5 +67,3 @@ print(time.time() - start)
 start = time.time()
 print("Part Two: ", walk((1, 0), file_to_array(INPUT), False))
 print(time.time() - start)
-
-# NOT 4562
