@@ -60,7 +60,7 @@ def connect_graph(intersections, grid):
             path = {intersection}
             next_idx = neighbor
 
-            while next_idx not in intersections or next_idx is None:
+            while next_idx not in intersections and next_idx is not None:
                 curr_idx = next_idx
                 path.add(curr_idx)
                 next_idx = None
