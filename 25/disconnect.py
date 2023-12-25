@@ -1,8 +1,6 @@
-import copy
+import heapq
 import time
 from util import assert_equals, file_to_array
-from itertools import combinations
-from collections import defaultdict, deque
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -11,6 +9,7 @@ FILENAME = "input.txt"
 
 INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
+RENDER = False
 
 
 class Component:  # Default behavior is transparent broadcaster
@@ -24,6 +23,7 @@ class Component:  # Default behavior is transparent broadcaster
     def stringify(self):
         return f"{self.name} -> {self.connections}"
 
+
 def split_nodes(f):
     lines = [row.split(": ") for row in file_to_array(f)]
     network = {}
@@ -32,12 +32,12 @@ def split_nodes(f):
         component, connections = row
         network[component] = Component(component, connections.split(" "))
 
-    cables = set() # set of sets
+    # cables = set() # set of sets
     unconnected = {}
     for name, component in network.items():
         for connection in component.connections:
-            cable = (name, connection) if name < connection else (connection, name)
-            cables.add(cable)
+            # cable = (name, connection) if name < connection else (connection, name)
+            # cables.add(cable)
             if connection not in network:
                 if connection not in unconnected:
                     unconnected[connection] = Component(connection, {name})
@@ -47,32 +47,40 @@ def split_nodes(f):
     network.update(unconnected)
 
     visualize(network)
-    # for item in network.values():
-    #     print(item.stringify())
+    cuts = [("jzj", "vkb"), ("hhx", "vrx"), ("grh", "nvh")] # p1
+    slice_network(network, cuts)
+    visualize(network)
+
+    size_a = count_network("jzj", network)
+    size_b = count_network("vkb", network)
+
+    assert (size_a + size_b) == len(network)
+    return size_a * size_b
 
 
-    # df = pd.read_csv('data.csv', sep=" ", header=None)/
-    # plot.add_tools(PointDrawTool(renderers = [graph_renderer.node_renderer], empty_value = 'black'))
-    # plot.renderers.append(graph_renderer)
+def slice_network(network, cuts):
+    for a, b in cuts:
+        network[a].connections.remove(b)
+        network[b].connections.remove(a)
 
-    # # Start disconnecting
-    # for connections in list(combinations(cables, 3)):
-    #     test_network = copy.deepcopy(network)
-    #     network_entry_points = []
-    #     for cable in connections:
-    #         test_network[cable[0]].connections.remove(cable[1])
-    #         test_network[cable[1]].connections.remove(cable[0])
-    #         network_entry_points += list(cable)
-        
-    #     # test networks
-    #     checked = set()
-    #     for entry in network_entry_points:
-    #         check = 
 
-    #     print (c1, c2, c3)
+def count_network(entry, network):
+    visited = {entry}
+    queue = [entry]
+
+    while len(queue) > 0:
+        node = heapq.heappop(queue)
+        for move in network[node].connections:
+            if move not in visited:
+                heapq.heappush(queue, move)
+                visited.add(move)
+    return len(visited)
 
 
 def visualize(network):
+    if not RENDER:
+        return
+    print(" Rendering...")
     G = nx.DiGraph()
     for name, component in network.items():
         G.add_node(name)
@@ -82,9 +90,6 @@ def visualize(network):
         G,
         pos,
         with_labels=True,
-        node_size=120,
-        node_color="skyblue",
-        font_size=8,
     )
     plt.show()
 
