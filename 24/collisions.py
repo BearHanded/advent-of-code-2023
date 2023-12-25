@@ -5,14 +5,13 @@ INPUT = 'input.txt'
 TEST_INPUT = 'test_input.txt'
 
 
-class Point:  # Default behavior is transparent broadcaster
-    def __init__(self, coordinates):
-        self.x, self.y , self.z  = coordinates
-
-class Ray:  # Default behavior is transparent broadcaster
+class Ray:
     def __init__(self, coordinates, direction_vector):
         self.x, self.y , self.z  = coordinates
         self.dx, self.dy , self.dz  = direction_vector
+
+    def at_time(self, elapsed):
+        return self.x + elapsed * self.dx, self.y + elapsed * self.dy, self.z + elapsed * self.dz
 
 
 def test_collisions(min_range, max_range, f):
@@ -43,7 +42,6 @@ def intersection_2d(a, b):
 
     if u < 0 or v < 0:
         return None
-    a.x + a.dx * u, a.y + a.dy * u
     return a.x + a.dx * u, a.y + a.dy * u
 
 
