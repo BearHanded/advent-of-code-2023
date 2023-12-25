@@ -7,8 +7,8 @@ TEST_INPUT = 'test_input.txt'
 
 class Ray:
     def __init__(self, coordinates, direction_vector):
-        self.x, self.y , self.z  = coordinates
-        self.dx, self.dy , self.dz  = direction_vector
+        self.x, self.y , self.z = coordinates
+        self.dx, self.dy , self.dz = direction_vector
 
     def at_time(self, elapsed):
         return self.x + elapsed * self.dx, self.y + elapsed * self.dy, self.z + elapsed * self.dz
@@ -27,6 +27,16 @@ def test_collisions(min_range, max_range, f):
 
     return intersections
 
+
+def find_path(f):
+    lines = [[[int(j) for j in i.split(", ")] for i in row.split(" @ ")] for row in file_to_array(f)]
+    hail = [Ray(p, d) for (p, d) in lines]
+
+    targets = hail[:2]
+
+    # we know we need to hit a line between 3 items, and we should hit all
+    # find when they line up... how
+    #
 
 # https://stackoverflow.com/questions/2931573/determining-if-two-rays-intersect
 def intersection_2d(a, b):
